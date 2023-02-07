@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-editable="story.content">
     <h1>I'm {{ $route.fullPath }}</h1>
 
     <div>
@@ -12,13 +12,21 @@
 </template>
 
 <script setup>
-const { accessToken } = useRuntimeConfig();
 const { path } = useRoute();
-const patchedPath = path === "/" ? "/home" : path;
+const patchedPath = (path === "/" ? "/home" : path).substring(1);
 
-const { data } = await useFetch(
-  `https://api.storyblok.com/v2/cdn/stories${patchedPath}?version=draft&token=${accessToken}`
-);
+const story = await useAsyncStoryblok(patchedPath, { version: "draft" });
 
-const story = computed(() => data.value.story);
+// const story = ref(null);
+// const storyblokApi = useStoryblokApi();
+// const { data } = await useAsyncData(patchedPath, () =>
+//   storyblokApi.get(`cdn/stories/${patchedPath}`, {
+//     version: "draft",
+//   })
+// );
+// story.value = data.value.data.story;
+
+// onMounted(() => {
+//   useStoryblokBridge(story.value.id, (evStory) => (story.value = evStory));
+// });
 </script>
