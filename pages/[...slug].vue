@@ -12,10 +12,16 @@
 </template>
 
 <script setup>
-const { path } = useRoute();
-const patchedPath = (path === "/" ? "/home" : path).substring(1);
+const route = useRoute();
+const { locale } = useI18n();
+let path = route.path.replace("/en", "").replace("/es", "");
+path = path.startsWith("/") ? path.substring(1) : path;
+path = path || "home";
 
-const story = await useAsyncStoryblok(patchedPath, { version: "draft" });
+const story = await useAsyncStoryblok(path, {
+  version: "draft",
+  language: locale.value,
+});
 
 // const story = ref(null);
 // const storyblokApi = useStoryblokApi();
